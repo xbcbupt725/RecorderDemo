@@ -1,10 +1,14 @@
 package com.example.utl;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.ShortBuffer;
 
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -27,7 +31,15 @@ public class MyRecorder {
 	private static final String saveFold = "Audio123";// 保存的文件夹名
 	private static final String temp_file = "record_temp.raw";// 零时文件名
 	private Thread recThread = null;//录音线程
-	
+	ShortBuffer buf;
+	public ShortBuffer getBuf() {
+		return buf;
+	}
+
+	public void setBuf(ShortBuffer buf) {
+		this.buf = buf;
+	}
+
 	public MyRecorder() {
 		super();
 		saveFoldPath = SDPath + "/" + saveFold;
@@ -105,7 +117,7 @@ public class MyRecorder {
 			File file = new File(tempFilePath);
 			file.delete();
 		}
-
+		
 		private void copyWaveFile(String inFilename, String outFilename) {
 			FileInputStream in = null;
 			FileOutputStream out = null;
@@ -126,6 +138,7 @@ public class MyRecorder {
 			try {
 				in = new FileInputStream(inFilename);
 				out = new FileOutputStream(outFilename);
+				ByteArrayOutputStream chartBuf = new ByteArrayOutputStream();
 				totalAudioLen = in.getChannel().size();
 				totalDataLen = totalAudioLen + 36;
 				WriteWaveFileHeader(out, totalAudioLen, totalDataLen,
@@ -133,8 +146,10 @@ public class MyRecorder {
 
 				while (in.read(data) != -1) {
 					out.write(data);
+					chartBuf.write(data);
 				}
-
+				buf = ByteBuffer.wrap(chartBuf.toByteArray())
+						.order(ByteOrder.nativeOrder()).asShortBuffer();
 				in.close();
 				out.close();
 			} catch (FileNotFoundException e) {

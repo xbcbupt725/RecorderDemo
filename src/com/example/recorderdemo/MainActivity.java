@@ -1,6 +1,7 @@
 package com.example.recorderdemo;
 
 import java.io.File;
+import java.nio.ShortBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -14,10 +15,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.utl.MyRecorder;
+import com.example.utl.WaveImageHelper;
 
 
 
@@ -26,6 +28,7 @@ public class MainActivity extends ActionBarActivity {
 	private Button btnReset = null;
 	private Button btnRecord = null;
 	private String savePath = null;
+	private ImageView waveImage = null;
 	private String str = "当前录音次数：";
 	private String saveName = null;
 	//MediaRecorder recorder = new MediaRecorder();
@@ -35,6 +38,7 @@ public class MainActivity extends ActionBarActivity {
 	long startTime = 0;
 	long stopTime = 0;
 	private int i = 0;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -50,6 +54,7 @@ public class MainActivity extends ActionBarActivity {
 		tvCounter = (TextView) findViewById(R.id.tvCounter);
 		btnReset = (Button) findViewById(R.id.btnReset);
 		btnRecord = (Button) findViewById(R.id.btnRecord);
+		waveImage = (ImageView) findViewById(R.id.waveImage);
 		tvCounter.setText(str+i);
 		btnReset.setOnClickListener(new OnClickListener() {
 			
@@ -58,6 +63,7 @@ public class MainActivity extends ActionBarActivity {
 				// TODO Auto-generated method stub
 				i = 0;
 				tvCounter.setText(str+i);
+				WaveImageHelper.recylceWaveBitmap(waveImage);
 				
 			}
 		});
@@ -73,6 +79,7 @@ public class MainActivity extends ActionBarActivity {
 //	                    recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 //	            		recorder.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS);
 //	            		recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB);
+					    WaveImageHelper.recylceWaveBitmap(waveImage);
 	            		i++;
 	            		saveName = myFmt.format(new Date());
 	            		myRecorder.startRec();
@@ -112,6 +119,8 @@ public class MainActivity extends ActionBarActivity {
 //					   }
 					   tvCounter.setText(str+i);
 					   btnRecord.setText("按住录音");
+					   ShortBuffer buf = myRecorder.getBuf();
+					   WaveImageHelper.showWave(buf, 0, buf.capacity(), waveImage); 
 					   
 						   // You can reuse the object by going back to setAudioSource() step
 					
