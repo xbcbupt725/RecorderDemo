@@ -1,11 +1,9 @@
 package com.example.recorderdemo;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
@@ -19,6 +17,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.utl.MyRecorder;
+
 
 
 public class MainActivity extends ActionBarActivity {
@@ -27,10 +27,11 @@ public class MainActivity extends ActionBarActivity {
 	private Button btnRecord = null;
 	private String savePath = null;
 	private String str = "当前录音次数：";
-	private String saveName;
-	MediaRecorder recorder = new MediaRecorder();
+	private String saveName = null;
+	//MediaRecorder recorder = new MediaRecorder();
 	//RecordMainThreadOperator recordMainThreadOperator;
 	SimpleDateFormat myFmt=new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
+	MyRecorder myRecorder = new MyRecorder();
 	long startTime = 0;
 	long stopTime = 0;
 	private int i = 0;
@@ -38,7 +39,7 @@ public class MainActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		savePath = Environment.getExternalStorageDirectory().getAbsolutePath()+File.separator+"audioRecord"+File.separator;
+		savePath = Environment.getExternalStorageDirectory().getAbsolutePath()+File.separator+"audio123"+File.separator;
 		File file = new File(savePath);
 		if(!file.exists()){
 			file.mkdirs();
@@ -68,49 +69,49 @@ public class MainActivity extends ActionBarActivity {
 				//Toast.makeText(MainActivity.this, "touch", Toast.LENGTH_SHORT).show();
 				   if(event.getAction() == MotionEvent.ACTION_DOWN){  
 	                   // Toast.makeText(MainActivity.this, "ACTION_DOWN", Toast.LENGTH_SHORT).show();
-					    recorder.reset();
-	                    recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-	            		recorder.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS);
-	            		recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+//					    recorder.reset();
+//	                    recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+//	            		recorder.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS);
+//	            		recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB);
 	            		i++;
 	            		saveName = myFmt.format(new Date());
-	            		recorder.setOutputFile(savePath+saveName+".wav");
-	            		 try {
-	            			recorder.prepare();
-	            		} catch (IllegalStateException e) {
-	            			// TODO Auto-generated catch block
-	            			e.printStackTrace();
-	            		} catch (IOException e) {
-	            			// TODO Auto-generated catch block
-	            			e.printStackTrace();
-	            		}
+	            		myRecorder.startRec();
+	            		//recorder.setOutputFile(savePath+saveName+".wav");
+//	            		 try {
+//	            			//recorder.prepare();
+//	            		} catch (IllegalStateException e) {
+//	            			// TODO Auto-generated catch block
+//	            			e.printStackTrace();
+//	            		} catch (IOException e) {
+//	            			// TODO Auto-generated catch block
+//	            			e.printStackTrace();
+//	            		}
 	            		 
 	            		 btnRecord.setText("松手停止录音");
-	            		 recorder.start();   // Recording is now started
+	            		// recorder.start();   // Recording is now started
 	            		 startTime = System.currentTimeMillis();
 	                    
 	                }
 				   if(event.getAction() == MotionEvent.ACTION_UP){
 					   //Toast.makeText(MainActivity.this, "ACTION_U", Toast.LENGTH_SHORT).show();
-					   recorder.setOnErrorListener(null);
+					   //recorder.setOnErrorListener(null);
 						
 					   
 					   stopTime = System.currentTimeMillis();
-					   
-					   if(stopTime - startTime < 1000){
-						   Toast.makeText(MainActivity.this,"时间过短，录音失败", Toast.LENGTH_SHORT).show();
-						   i--;
-						   File f = new File(savePath+saveName+".wav");
-						   if(f.exists()){
-							   f.delete();
-						   }
-					   }else{
-						   
-						   tvCounter.setText(str+i);
-						   recorder.stop();
-					   }
+					   myRecorder.stopRecording(saveName + ".wav");
+//					   if(stopTime - startTime < 1000){
+//						   Toast.makeText(MainActivity.this,"时间过短，录音失败", Toast.LENGTH_SHORT).show();
+//						   i--;
+//						   myRecorder.stopRecording(saveName + ".wav");
+//						   File f = new File(savePath+saveName+".wav");
+//						   if(f.exists()){
+//							   f.delete();
+//						   }
+//					   }else{
+//						   tvCounter.setText(str+i);				   
+//					   }
+					   tvCounter.setText(str+i);
 					   btnRecord.setText("按住录音");
-					   recorder.reset();
 					   
 						   // You can reuse the object by going back to setAudioSource() step
 					
@@ -124,7 +125,7 @@ public class MainActivity extends ActionBarActivity {
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		 recorder.release(); // Now the object cannot be reused
+		 //recorder.release(); // Now the object cannot be reused
 	}
 
 	@Override
