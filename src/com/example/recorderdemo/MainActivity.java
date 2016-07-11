@@ -33,7 +33,7 @@ public class MainActivity extends ActionBarActivity {
 	private String saveName = null;
 	//MediaRecorder recorder = new MediaRecorder();
 	//RecordMainThreadOperator recordMainThreadOperator;
-	SimpleDateFormat myFmt=new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
+	SimpleDateFormat myFmt=new SimpleDateFormat("yyyy_MM_dd_ HH_mm_ss");
 	MyRecorder myRecorder = new MyRecorder();
 	long startTime = 0;
 	long stopTime = 0;

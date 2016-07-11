@@ -17,7 +17,7 @@ import android.os.Environment;
 
 public class MyRecorder {
 	private AudioRecord audioRecord = null;
-	private static int frequency = 8000;
+	private static int frequency = 16000;
 	private static int channel = AudioFormat.CHANNEL_IN_MONO;// …Ë÷√…˘µ¿
 	private static int encodingBitRate = AudioFormat.ENCODING_PCM_16BIT;// …Ë÷√±‡¬Î
 	private static final int recorder_bpp = 16;
